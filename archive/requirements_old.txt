@@ -35,7 +35,7 @@ python-dotenv==0.16.0
 pytz==2020.1
 requests==2.25.1
 six==1.15.0
-sqlparse==0.3.1
+sqlparse==0.5.0
 toml==0.10.2
 traitlets==5.0.5
 typing-extensions==3.7.4.3
