@@ -33,7 +33,7 @@ pycparser==2.20
 Pygments==2.8.1
 python-dotenv==0.16.0
 pytz==2020.1
-requests==2.25.1
+requests==2.32.2
 six==1.15.0
 sqlparse==0.3.1
 toml==0.10.2
