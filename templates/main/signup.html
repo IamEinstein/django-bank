@@ -2,117 +2,88 @@
 {% block title %}Sign Up{% endblock title %}
 
 {% block body %}
-{% if error %}
-<div  role="alert"class="alert alert-danger">{{error}}</div>
-{% endif %}
+<div class="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div class="sm:mx-auto sm:w-full sm:max-w-md">
+        <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">Create your account</h2>
+    </div>
 
+    <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+            {% if error %}
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                {{error}}
+            </div>
+            {% endif %}
 
+            <form id="login-form" action="{% url 'main:signed_up' %}" method="post" class="space-y-6">
+                {% csrf_token %}
+                
+                <div>
+                    <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+                    <div class="mt-1">
+                        <input id="name" name="name" type="text" required
+                            class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                            placeholder="Enter your name">
+                    </div>
+                </div>
 
-<form id="login-form "action="{% url 'main:signed_up' %}" method="post">
-{% csrf_token %}
- <h1 class="has-text-weight-bold has-text-centered is-size-1">Sign up</h1>
-      <div class="row g-1 align-items-center">
-        <div class="col-auto">
-          <label
-            class="has-text-weight-medium has-text-centered is-size-5"
-            for="name"
-            >Name</label
-          >
-          <input
-            class="form-control"
-            type="text"
-            placeholder="Name"
-            name="name"
-            id="name"
-            required
-          />
+                <div>
+                    <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+                    <div class="mt-1">
+                        <input id="username" name="username" type="text" required
+                            class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                            placeholder="Choose a username">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                    <div class="mt-1">
+                        <input id="password" name="password" type="password" required
+                            class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                            placeholder="Create a password">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700">Email (Optional)</label>
+                    <div class="mt-1">
+                        <input id="email" name="email" type="email"
+                            class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                            placeholder="Enter your email">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="discord_username" class="block text-sm font-medium text-gray-700">Discord Username (Optional)</label>
+                    <div class="mt-1">
+                        <input id="discord_username" name="discord_username" type="text"
+                            class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                            placeholder="Enter your Discord username">
+                    </div>
+                </div>
+
+                <div>
+                    <button type="submit"
+                        class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Sign Up
+                    </button>
+                </div>
+            </form>
+
+            <div class="mt-6">
+                <div class="relative">
+                    <div class="relative flex justify-center text-sm">
+                        <span class="px-2 bg-white text-gray-500">
+                            Already have an account? 
+                            <a href="{% url 'main:login'%}" class="font-medium text-indigo-600 hover:text-indigo-500">
+                                Log in
+                            </a>
+                        </span>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-
-      <br />
-
-      <div class="row g-1 align-items-center">
-        <div class="col-auto">
-          <label
-            class="has-text-weight-medium has-text-centered is-size-5"
-            for="username"
-            >Username</label
-          >
-          <input
-            class="form-control"
-            aria-describedby="UsernameHelpInline"
-            type="text"
-            placeholder="Username"
-            name="username"
-            id="username"
-            required
-          />
-        </div>
-      </div>
-      <br />
-      <div class="row g-10 align-items-center">
-        <div class="col-auto">
-          <label
-            class="has-text-weight-medium has-text-centered is-size-5"
-            for="password"
-            >Password</label
-          >
-          <input
-            class="form-control"
-            aria-describedby="passwordHelpInline"
-            type="password"
-            placeholder="Password"
-            name="password"
-            id="password"
-            required
-          />
-        </div>
-      </div>
-      <br />
-
-      <div class="row g-1 align-items-center">
-        <div class="col-auto">
-          <label
-            class="has-text-weight-medium has-text-centered is-size-5"
-            for="email"
-            >Email</label
-          >
-          <input
-            class="form-control"
-            type="email"
-            placeholder="Email (Optional)"
-            name="email"
-            id="email"
-          />
-        </div>
-      </div>
-
-      <br />
-
-      <div class="row g-1 align-items-center">
-        <div class="col-auto">
-          <label
-            class="has-text-weight-medium has-text-centered is-size-5"
-            for="discord_username"
-            >Discord Username (Optional)</label
-          >
-          <input
-            class="form-control"
-            type="text"
-            placeholder="Discord Username"
-            name="discord_username"
-            id="discord_username"
-            Optional
-          />
-        </div>
-      </div>
-      <br />
-
-    <input id="sign-up" class="btn btn-primary" type="submit" value="Sign Up" required />
-    </form>
-    <br />
-
-    <a class="btn-link" href="{% url 'main:login'%}">
-      Already have an account, Login</a
-    >
+    </div>
+</div>
 {% endblock body %}

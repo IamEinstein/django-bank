@@ -1,27 +1,101 @@
 {% extends 'base.html' %}
-{% block title %}
-Friends
-{% endblock title %}
+{% block title %}Friends{% endblock title %}
+
 {% block body %}
-{% if friends %}
-<ul>
-    {% for friend in friends %}
-<li><h3>{{friend.username}}</h3>
-    {% endfor %}
-</ul>
-<br>
-<a href="{% url 'main:add_friends' %}" class="btn btn-success">Add friends</a>
-<a href="{% url 'main:index' %}" class="btn btn-primary">Go back</a>
+<div class="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 py-8 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header Section -->
+        <div class="flex justify-between items-center mb-8">
+            <h2 class="text-3xl font-bold text-gray-900 flex items-center">
+                <svg class="w-8 h-8 mr-3 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                My Friends
+                {% if friends %}
+                <span class="ml-3 text-sm bg-indigo-100 text-indigo-700 py-1 px-3 rounded-full">{{friends|length}}</span>
+                {% endif %}
+            </h2>
+            
+            {% if friends %}
+            <div class="relative">
+                <input type="text" placeholder="Search friends..." class="w-64 pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" id="friendSearch">
+                <svg class="w-5 h-5 text-gray-400 absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+            </div>
+            {% endif %}
+        </div>
 
-{% else %}
-<h1>You don't have any friends yet</h1>
-<br>
-<a href="{% url 'main:add_friends' %}" class="btn btn-success">Add friends</a>
-<a href="{% url 'main:index' %}" class="btn btn-primary">Go back</a>
+        {% if friends %}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {% for friend in friends %}
+            <div class="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <div class="relative">
+                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+                                <span class="text-white font-semibold text-lg">{{friend.username|slice:":1"}}</span>
+                            </div>
+                            <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></div>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900">{{friend.username}}</h3>
+                            <p class="text-sm text-gray-500">Member since {{friend.date_joined|date:"M Y"}}</p>
+                        </div>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button class="p-2 text-gray-400 hover:text-indigo-600 rounded-full hover:bg-indigo-50 transition-colors duration-200">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="bg-white rounded-xl p-12 shadow-sm text-center">
+            <div class="max-w-sm mx-auto">
+                <svg class="mx-auto h-16 w-16 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                <h1 class="mt-6 text-2xl font-bold text-gray-900">Start Building Your Network</h1>
+                <p class="mt-3 text-gray-500">Connect with other users to share experiences and collaborate on projects!</p>
+            </div>
+        </div>
+        {% endif %}
 
-{% endif %}
+        <div class="mt-8 flex justify-center space-x-4">
+            <a href="{% url 'main:add_friends' %}" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-lg shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200 transform hover:scale-105">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+                Add Friends
+            </a>
+            <a href="{% url 'main:index' %}" class="inline-flex items-center px-6 py-3 border border-gray-300 text-base font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Back to Home
+            </a>
+        </div>
+    </div>
+</div>
 
-
-
-
+<script>
+document.getElementById('friendSearch').addEventListener('input', function(e) {
+    const searchTerm = e.target.value.toLowerCase();
+    const friendCards = document.querySelectorAll('.grid > div');
+    
+    friendCards.forEach(card => {
+        const username = card.querySelector('h3').textContent.toLowerCase();
+        if (username.includes(searchTerm)) {
+            card.style.display = 'block';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+});
+</script>
 {% endblock body %}

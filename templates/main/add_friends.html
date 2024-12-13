@@ -1,27 +1,109 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}
-Add Friends
-{% endblock title %}
+{% block title %}Add Friends{% endblock title %}
+
 {% block body %}
 {% if user %}
 <script src="{% static 'friends.js' %}"></script>
 
-<div id="doesnotexist" class="alert alert-danger" style="display:none;">The account of your friend was not found, so no friend has been added. Kindly, double-check the username (It's case sensitive)</div>
-<div id="friend_added" class="alert alert-success" style="display:none;">Your friend has been added, now to can tranfer money to him/her.</div>
+<div class="min-h-screen bg-gradient-to-tr from-blue-50 via-indigo-50 to-purple-50 p-0 m-0">
+    <div class="container mx-auto px-4 py-16 max-w-4xl">
+        <!-- Alerts -->
+        <div class="fixed top-4 right-4 z-50 w-96">
+            <div id="doesnotexist" class="hidden transform transition-all duration-300 bg-white/80 backdrop-blur-lg border-l-4 border-red-500 text-red-700 p-4 rounded-lg shadow-lg mb-4" role="alert">
+                <div class="flex items-center">
+                    <svg class="w-6 h-6 mr-2 animate-pulse text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                    </svg>
+                    <p class="font-medium">Username not found</p>
+                </div>
+            </div>
+            
+            <div id="friend_added" class="hidden transform transition-all duration-300 bg-white/80 backdrop-blur-lg border-l-4 border-green-500 text-green-700 p-4 rounded-lg shadow-lg mb-4" role="alert">
+                <div class="flex items-center">
+                    <svg class="w-6 h-6 mr-2 animate-bounce text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                    </svg>
+                    <p class="font-medium">Friend successfully added!</p>
+                </div>
+            </div>
+        </div>
 
-<h1>Add Friends</h1>
+        <!-- Main Card -->
+        <div class="max-w-md mx-auto">
+            <div class="bg-white/70 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] rounded-2xl p-8 transform hover:scale-[1.01] transition-all duration-300">
+                <!-- Header -->
+                <div class="text-center mb-8">
+                    <div class="relative inline-block">
+                        <div class="absolute inset-0 bg-indigo-100 rounded-full blur-xl"></div>
+                        <svg class="relative w-20 h-20 text-indigo-600 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
+                        </svg>
+                    </div>
+                    <h2 class="mt-6 text-3xl font-bold text-gray-900">Add a Friend</h2>
+                    <p class="mt-2 text-gray-600">Connect with friends to enable transfers</p>
+                </div>
 
-<form action="{% url 'main:add_friends' %}" method="post">
-{% csrf_token %}
-<label for="friend">Friend username </label>
-<br>
-<input class="form-control" type="text" name="friend" placeholder="Friend Username (Usernames are case sensitive)" id="friend" required>
-<br>
-<input class="btn btn-success"type="submit" value="Add Friend">
-&nbsp;
-<a href="{% url 'main:index' %}" class="btn btn-primary">Go back</a>
-</form>
+                <!-- Form -->
+                <form action="{% url 'main:add_friends' %}" method="post" class="space-y-6">
+                    {% csrf_token %}
+                    <div class="relative group">
+                        <div class="relative">
+                            <input type="text" name="friend" id="friend" required
+                                class="block w-full px-4 py-3 text-gray-900 bg-transparent border-2 border-gray-200 rounded-xl 
+                                focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500
+                                placeholder-transparent peer transition-all duration-300"
+                                placeholder="Username">
+                            <label for="friend" 
+                                class="absolute left-2 -top-2.5 bg-white px-2 text-sm text-gray-600
+                                transition-all duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0]
+                                peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0
+                                peer-focus:scale-75 peer-focus:-translate-y-4 peer-focus:text-indigo-600">
+                                Friend's Username
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="flex flex-col sm:flex-row gap-4 pt-4">
+                        <button type="submit"
+                            class="flex-1 group relative px-6 py-3 text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 
+                            transition-all duration-300 overflow-hidden shadow-lg hover:shadow-indigo-500/25">
+                            <span class="absolute right-0 w-8 h-32 -mt-12 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 rotate-12 group-hover:-translate-x-40 ease"></span>
+                            <div class="flex items-center justify-center space-x-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                                </svg>
+                                <span>Add Friend</span>
+                            </div>
+                        </button>
+                        
+                        <a href="{% url 'main:index' %}"
+                            class="flex-1 group relative px-6 py-3 text-indigo-600 bg-indigo-50 rounded-xl hover:bg-indigo-100 
+                            transition-all duration-300 overflow-hidden text-center shadow-lg">
+                            <div class="flex items-center justify-center space-x-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                                </svg>
+                                <span>Go Back</span>
+                            </div>
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+@keyframes fade-in-down {
+    0% { opacity: 0; transform: translateY(-20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in-down {
+    animation: fade-in-down 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+</style>
 
 {% endif %}
 {% endblock body %}

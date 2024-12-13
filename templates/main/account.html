@@ -2,155 +2,236 @@
 {% block title %}Your account{% endblock title %}
 {% block body %}
 {% load static %}
-    
+
 <script src="{% static 'account.js' %}"></script>
-{% comment %} ALERT MSGS {% endcomment %}
-<div id="non-animation">
-<div class=" alert alert-primary" style="display:none;" id="pwd_change_alert">Your password has been changed </div>
-<div class=" alert alert-primary" style="display:none;" id="t_list_erase">Your transaction history was deleted </div>
-<div class=" alert alert-primary" style="display:none;" id="discord_account_linked">Your discord account was linked</div>
-<div class=" alert alert-warning" style="display:none;" id="discord_account_unlinked">Your discord account was unlinked</div>
+<script src="https://cdn.tailwindcss.com"></script>
 
-<div class=" alert alert-danger" style="display:none;" id="format_incorrect">The format of your discord username was incorrect, so it has <b>NOT</b> been linked </div>
+<div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 py-12">
+    <div class="max-w-4xl mx-auto px-4 space-y-6">
+        <!-- Alerts Container -->
+        <div id="non-animation" class="space-y-3">
+            <!-- Alert templates with consistent styling -->
+            <div class="transform transition-all duration-300 flex items-center p-4 rounded-lg shadow-sm bg-green-50 text-green-700 hidden" id="pwd_change_alert">
+                <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                </svg>
+                <span class="font-medium">Password successfully updated</span>
+            </div>
+            <div class="transform transition-all duration-300 flex items-center p-4 rounded-lg bg-green-50 text-green-700 hidden" id="t_list_erase">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                Transaction history cleared
+            </div>
+            <div class="transform transition-all duration-300 alert alert-primary hidden" id="discord_account_linked">Your discord account was linked</div>
+            <div class="transform transition-all duration-300 alert alert-warning hidden" id="discord_account_unlinked">Your discord account was unlinked</div>
+            <div class="transform transition-all duration-300 alert alert-danger hidden" id="format_incorrect">The format of your discord username was incorrect, so it has <b>NOT</b> been linked </div>
 
+            <!-- Main Account Card -->
+            <div id="main" class="bg-white rounded-2xl shadow-xl p-8 space-y-8 transition-all duration-300 hover:shadow-2xl">
+                <div class="flex items-center justify-between border-b pb-6">
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-900">Account Information</h1>
+                        <p class="text-gray-500 mt-1">Manage your account settings and preferences</p>
+                    </div>
+                    <div class="p-3 bg-indigo-50 rounded-full">
+                        <svg class="w-7 h-7 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                </div>
 
-{% comment %} ACCOUNT INFO {% endcomment %}
-<div id="main" class="shadow-none p-3 mb-5 bg-light rounded">
-<h1 class="text">Your account info</h1>
-{% if warning %}
-<div class="alert alert-warning">{{warning}}</div>
-{% endif %}
-{% if warning2 %}
-<div class="alert alert-warning">{{warning2}}</div>
-{% endif %}
-<ul>
-<h3 class="text text-primary"> Name  - {{user.name}}</h3>
-<h3 class="text text-primary"> Balance  - {{user.bank_balance}}</h3>
-<h3 class="text text-primary"> Username  - {{user.username}}</h3>
-<h3 class="text text-primary"> Email  - {{user.email}}</h3>
-<h3 class="text text-primary"> Verified Email  - {{user.email_is_verified}}</h3>
+                {% if warning or warning2 %}
+                <div class="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-lg">
+                    {% if warning %}<p class="text-amber-700">{{warning}}</p>{% endif %}
+                    {% if warning2 %}<p class="text-amber-700">{{warning2}}</p>{% endif %}
+                </div>
+                {% endif %}
 
-{% if discord_account %}
-<h3 class="text text-primary">Discord Username  - {{discord_account.discord_username}}</h3>
-<form action="{% url 'main:unlink_discord' %}" method="post">
-{% if discord_account.is_verified == True %}
-<b><h3 class="text text-success">Discord Account is verified</h3></b>
-{% endif %}
-{% if discord_account.is_verified == False %}
-<h3 class="text text-danger">Discord Account is not verified</h3>
-<a href="{% url 'discord:verify' %}" class="btn btn-primary">Verify Discord</a>
-<br><br>
-{% endif %}
-{% csrf_token %}
-<input type="submit" value="Unlink Discord" class="btn btn-primary">
-</form>
-{% else %}
-<h3 class="text text-warning">Discord Account is not linked</h3>
-<btn class="btn btn-primary" id="link-discord" onclick="link_discord()">Link Discord</btn>
+                <!-- User Info Grid -->
+                <div class="grid md:grid-cols-2 gap-6">
+                    <!-- Info items with improved styling -->
+                    <div class="flex items-center p-5 bg-gray-50 rounded-xl transition-all duration-300 hover:bg-gray-100 hover:shadow-md">
+                        <svg class="w-5 h-5 text-primary mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 007-7z" />
+                        </svg>
+                        <div>
+                            <span class="text-sm text-gray-500">Name</span>
+                            <p class="text-lg font-medium text-gray-900">{{user.name}}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center p-5 bg-gray-50 rounded-xl transition-all duration-300 hover:bg-gray-100 hover:shadow-md">
+                        <svg class="w-5 h-5 text-primary mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14a7 7 0 00-7 7h14a7 7 0 007-7z" />
+                        </svg>
+                        <div>
+                            <span class="text-sm text-gray-500">Balance</span>
+                            <p class="text-lg font-medium text-gray-900">{{user.bank_balance}}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center p-5 bg-gray-50 rounded-xl transition-all duration-300 hover:bg-gray-100 hover:shadow-md">
+                        <svg class="w-5 h-5 text-primary mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14a7 7 0 00-7 7h14a7 7 0 007-7z" />
+                        </svg>
+                        <div>
+                            <span class="text-sm text-gray-500">Username</span>
+                            <p class="text-lg font-medium text-gray-900">{{user.username}}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center p-5 bg-gray-50 rounded-xl transition-all duration-300 hover:bg-gray-100 hover:shadow-md">
+                        <svg class="w-5 h-5 text-primary mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14a7 7 0 00-7 7h14a7 7 0 007-7z" />
+                        </svg>
+                        <div>
+                            <span class="text-sm text-gray-500">Email</span>
+                            <p class="text-lg font-medium text-gray-900">{{user.email}}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center p-5 bg-gray-50 rounded-xl transition-all duration-300 hover:bg-gray-100 hover:shadow-md">
+                        <svg class="w-5 h-5 text-primary mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14a7 7 0 00-7 7h14a7 7 0 007-7z" />
+                        </svg>
+                        <div>
+                            <span class="text-sm text-gray-500">Verified Email</span>
+                            <p class="text-lg font-medium text-gray-900">{{user.email_is_verified}}</p>
+                        </div>
+                    </div>
 
-{% endif %}
+                    <!-- Discord Section with improved styling -->
+                    {% if discord_account %}
+                    <div class="md:col-span-2 bg-indigo-50 rounded-xl p-6 space-y-4">
+                        <div class="flex items-center p-4 bg-indigo-50 rounded-lg">
+                            <svg class="w-6 h-6 text-indigo-600 mr-3" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+                            </svg>
+                            <div>
+                                <span class="text-sm text-indigo-600">Discord Account</span>
+                                <p class="text-lg font-medium text-indigo-900">{{discord_account.discord_username}}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4 flex space-x-4">
+                            {% if discord_account.is_verified %}
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                                <svg class="w-4 h-4 mr-1.5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                </svg>
+                                Verified
+                            </span>
+                            {% else %}
+                            <h3 class="text text-danger">Discord Account is not verified</h3>
+                            <a href="{% url 'discord:verify' %}" class="btn btn-primary">Verify Discord</a>
+                            <br><br>
+                            {% endif %}
+                            {% csrf_token %}
+                            <input type="submit" value="Unlink Discord" class="btn btn-primary">
+                        </form>
+                    </div>
+                    {% else %}
+                    <div class="md:col-span-2">
+                        <button class="w-full group flex items-center justify-center px-6 py-4 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-all duration-300 shadow-lg hover:shadow-xl" id="link-discord" onclick="link_discord()">
+                            <svg class="w-5 h-5 mr-3 transition-transform group-hover:scale-110" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+                            </svg>
+                            Link Discord Account
+                        </button>
+                    </div>
+                    {% endif %}
 
-<br>
-<br>
-{% if warning %}
-<button onclick="email_form()" class="btn btn-primary">
-Add email
-</button>
-{% else %}
-<a href="{% url 'main:add_email' %}" class="btn btn-danger">
-Unlink email
-</a>
-{% endif %}
-</ul>
-<br>
+                    <!-- Action Buttons with improved layout -->
+                    <div class="md:col-span-2 grid md:grid-cols-3 gap-4 pt-6">
+                        {% if warning %}
+                        <button onclick="email_form()" class="flex items-center justify-center px-6 py-3 bg-primary text-white rounded-xl hover:bg-primary-dark transition-all duration-300 shadow-md hover:shadow-lg">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                            Add email
+                        </button>
+                        {% else %}
+                        <a href="{% url 'main:add_email' %}" class="btn-danger transition-transform hover:scale-105">
+                            Unlink email
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
 
-<a class="btn btn-primary" href="/site/index">
-Go back
-</a>
-<a class="btn btn-primary" href="/site/t_list">
-See transaction history</a>
-<button class="btn btn-dark" onclick="show_pwd_form()">Change Password</button>
+            <!-- Forms with modern styling -->
+            <div class="hidden" id="email_form">
+                <div class="bg-white rounded-2xl shadow-xl p-8">
+                    <form action="{% url 'main:add_email' %}" method="post">
+                        {% csrf_token %}
+                        <div class="row g-1 align-items-center">
+                            <div class="col-auto">
+                                <b><h1 class="has-text-weight-bold has-text-centered is-size-5" for="email">Discord username</h1></b>
+                                <br>
+                                <input class="form-control" type="email" placeholder="Email" name="email" id="email" required>
+                                <br>
+                            </div>
+                        </div>
+                        <span class="btn btn-success" onclick="back()">Go back</span>
+                        <input id="add_mail_submit" type="submit" value="Add email" class="btn btn-primary">
+                    </form>
+                </div>
+            </div>
+
+            <!-- LINK DISCORD -->
+            <div class="hidden" id="discord_form">
+                <div class="bg-white rounded-2xl shadow-xl p-8">
+                    <form action="{% url 'main:link_discord' %}" method="post">
+                        {% csrf_token %}
+                        <div class="row g-1 align-items-center">
+                            <div class="col-auto">
+                                <b><h1 class="has-text-weight-bold has-text-centered is-size-5" for="username">Discord username</h1></b>
+                                <br>
+                                <input class="form-control" type="text" placeholder="DiscordUsername#0000" name="username" id="username" required>
+                                <br>
+                            </div>
+                        </div>
+                        <span class="btn btn-success" onclick="back()">Go back</span>
+                        <input type="submit" value="Link discord" class="btn btn-primary">
+                    </form>
+                </div>
+            </div>
+
+            <!-- CHANGE PASSWORD FORM -->
+            <div class="hidden" id="pwd_form">
+                <div class="bg-white rounded-2xl shadow-xl p-8">
+                    <form action="{% url 'main:change_pwd' %}" method="post">
+                        <div class="row g-1 align-items-center">
+                            <div class="col-auto">
+                                <b><h1 class="has-text-weight-bold has-text-centered is-size-5" for="password">New password</h1></b>
+                                <br>
+                                <input class="form-control" type="text" placeholder="New Password" name="password" id="password" required>
+                                <br>
+                                <span class="btn btn-danger" onclick="WarningPopup()" value="Change password">Change password </span>
+                                <span class="btn btn-success" onclick="back()">Go back</span>
+                                <!-- FINAL CHECK POPUP DIV -->
+                                <div class="modal" id="popUp">
+                                    {% csrf_token %}
+                                    <span class="modal-content" id="myPopup">
+                                        <h1 class="text"><u>Warning</u> ⚠</h1>
+                                        <h2 class="text">Are you sure that you want to change your passoword ?</h2>
+                                        <h4 class="text"> <b>THIS ACTION IS IRREVERSIBLE</b> </h4>
+                                        <br>
+                                        <input type="submit" value="Yes, Change it" name="submit" class="btn btn-primary shadow-lg">
+                                        <br>
+                                        <span onclick="cancel()" class="btn btn-success">No, Go Back</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-
-{% comment %} EMAIL FORM {% endcomment %}
-
-<div style="display:none;" id="email_form">
-<form action="{% url 'main:add_email' %}" method="post">
-{% csrf_token %}
-<div class="row g-1 align-items-center">
-<div class="col-auto">
-<b><h1 class="has-text-weight-bold  has-text-centered is-size-5" for="email">Discord username</h1></b>
-<br>
-<input class="form-control" type="email" placeholder="Email" name="email" id="email" required>
-<br>
-</div></div>
-<span class="btn btn-success" onclick="back()">Go back</span>
-<input id="add_mail_submit" type="submit" value="Add email" class="btn btn-primary">
-</form>
-</div>
-
-
-{% comment %} LINK DISCORD {% endcomment %}
-<div style="display:none;" id="discord_form">
-<form action="{% url 'main:link_discord' %}" method="post">
-{% csrf_token %}
-<div class="row g-1 align-items-center">
-<div class="col-auto">
-<b><h1 class="has-text-weight-bold  has-text-centered is-size-5" for="username">Discord username</h1></b>
-<br>
-<input class="form-control" type="text" placeholder="DiscordUsername#0000" name="username" id="username" required>
-<br>
-</div></div>
-<span class="btn btn-success" onclick="back()">Go back</span>
-<input type="submit" value="Link discord" class="btn btn-primary">
-</form>
-</div>
-
-
-{% comment %} CHANGE PASSWORD FORM {% endcomment %}
-<div style="display:none;" id="pwd_form">
-<form action="{% url 'main:change_pwd' %}" method="post">
-<div class="row g-1 align-items-center">
-<div class="col-auto">
-<b><h1 class="has-text-weight-bold  has-text-centered is-size-5" for="password">New password</h1></b>
-<br>
-<input class="form-control" type="text" placeholder="New Password" name="password" id="password" required>
-<br>
-<span class="btn btn-danger" onclick="WarningPopup()" value="Change password">Change password </span>
-<span class="btn btn-success" onclick="back()">Go back</span>
-{% comment %} FINAL CHECK POPUP DIV {% endcomment %}
-<div class="modal" id="popUp">
-{% csrf_token %}
-  <span class="modal-content"  id="myPopup">
-  <h1 class="text"><u>Warning</u> ⚠</h1>
-  <h2 class="text">Are you sure that you want to change your passoword ?</h2>
-  <h4 class="text"> <b>THIS ACTION IS IRREVERSIBLE</b> </h4>
-  <br>
-  <input type="submit" value="Yes, Change it" name="submit" class="btn btn-primary shadow-lg">
-  <br>
-  <span onclick="cancel()" class="btn btn-success">No, Go Back</span>
-  
-  </span> 
-</form>
-
-</div>
-
-</div>
-</div>
-</div>
-</div>
-
-
-
-<div id="animation" style="display:none;">
-<h1 class="text-center" id="animation-text">Trying to add your mail</h1>
-<br>
-<div class="cssload-loader">
-	<div class="cssload-inner cssload-one"></div>
-	<div class="cssload-inner cssload-two"></div>
-	<div class="cssload-inner cssload-three"></div>
-</div>
+<!-- Loading Animation with improved styling -->
+<div id="animation" class="fixed inset-0 bg-gray-900/70 backdrop-blur-sm flex items-center justify-center z-50" style="display:none;">
+    <div class="bg-white p-8 rounded-2xl shadow-2xl text-center max-w-sm mx-4">
+        <h2 class="text-xl font-semibold text-gray-900 mb-6" id="animation-text">Processing your request...</h2>
+        <div class="animate-spin rounded-full h-14 w-14 border-4 border-indigo-600 border-t-transparent mx-auto"></div>
+    </div>
 </div>
 {% endblock body %}
 
